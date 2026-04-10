@@ -37,3 +37,47 @@ void read_cpuinfo(CPU_info *cpu) {
 
     //lembrar de dar free em cpu->model_name pois strdup aloca memoria!
 }
+
+void read_cpu_stat(CPU_stat *cpu) {
+
+    FILE *file = fopen("/proc/stat", "r");
+    if(!file) return;
+
+    char *trash = NULL;
+    char *line = NULL;
+    size_t len_trash = 0;
+    size_t len = 0;
+
+    getline(&trash, &len_trash, file);
+
+    while(getline(&line, &len, file) != -1) {
+        if(strncmp(line, "cpu", 3) == 0) {
+            sscanf(line, 
+                "cpu%"SCNu32 
+                "%"SCNu64 
+                "%"SCNu64 
+                "%"SCNu64 
+                "%"SCNu64 
+                "%"SCNu64 
+                "%"SCNu64 
+                "%"SCNu64 
+                "%"SCNu64 
+                "%"SCNu64 
+                "%"SCNu64, 
+                &cpu->id, 
+                &cpu->user, 
+                &cpu->nice, 
+                &cpu->system, 
+                &cpu->idle, 
+                &cpu->iowait, 
+                &cpu->irq, 
+                &cpu->softirq, 
+                &cpu->steal, 
+                &cpu->guest, 
+                &cpu->guest_nice);
+        }      
+    }
+    free(trash);
+    free(line);
+    fclose(file);
+}
