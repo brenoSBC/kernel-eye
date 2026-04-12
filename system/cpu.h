@@ -2,13 +2,21 @@
 #define CPU_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 typedef struct {
-    char *model_name;
+    char model_name[128];
 } CPU_info;
 
 typedef struct {
+    CPU_stat *cores;
+    size_t num_cores;
+} CPU_cores;
+
+typedef struct {
     uint32_t id;
+    double usage;
+
     uint64_t user;
     uint64_t nice;
     uint64_t system;
@@ -19,15 +27,12 @@ typedef struct {
     uint64_t steal;
     uint64_t guest;
     uint64_t guest_nice;
-} CPU_core;
+} CPU_stat;
 
-typedef struct {
-    CPU_core *cores;
-    size_t num_cores;
-} CPU;
-
-void call_cpu_info(CPU_info *cpu);
+void calculate_core_usage(CPU_cores *cpu);
 
 void read_cpuinfo(CPU_info *cpu);
+
+void read_cpu_stat(CPU_cores *cpu);
 
 #endif
