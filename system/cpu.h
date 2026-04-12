@@ -9,7 +9,6 @@ typedef struct {
 
 typedef struct {
     uint32_t id;
-
     uint64_t user;
     uint64_t nice;
     uint64_t system;
@@ -20,12 +19,12 @@ typedef struct {
     uint64_t steal;
     uint64_t guest;
     uint64_t guest_nice;
-} CPU_stat;
+} CPU_core;
 
 typedef struct {
-    uint32_t id;
-    CPU_stat *cores;
-} CPU_cores;
+    CPU_core *cores;
+    size_t num_cores;
+} CPU;
 
 void call_cpu_info(CPU_info *cpu);
 

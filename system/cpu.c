@@ -5,8 +5,13 @@
 
 #include "cpu.h"
 
-void call_cpu_info(CPU_info *cpu) {
-    read_cpuinfo(cpu);
+void call_cpu_info(CPU_info *cpu_info) {
+    read_cpuinfo(cpu_info);
+    read_cpu_stat(core);
+}
+
+void calculate_usage_per_core() {
+
 }
 
 void read_cpuinfo(CPU_info *cpu) {
@@ -38,7 +43,7 @@ void read_cpuinfo(CPU_info *cpu) {
     //lembrar de dar free em cpu->model_name pois strdup aloca memoria!
 }
 
-void read_cpu_stat(CPU_stat *cpu) {
+void read_cpu_stat(CPU *cpu) {
 
     FILE *file = fopen("/proc/stat", "r");
     if(!file) return;
@@ -48,10 +53,16 @@ void read_cpu_stat(CPU_stat *cpu) {
     size_t len_trash = 0;
     size_t len = 0;
 
+    cpu->cores = NULL;
+    cpu->num_cores = 0;
+
     getline(&trash, &len_trash, file);
 
     while(getline(&line, &len, file) != -1) {
         if(strncmp(line, "cpu", 3) == 0) {
+
+            CPU_core core = {0};
+
             sscanf(line, 
                 "cpu%"SCNu32 
                 "%"SCNu64 
@@ -64,17 +75,21 @@ void read_cpu_stat(CPU_stat *cpu) {
                 "%"SCNu64 
                 "%"SCNu64 
                 "%"SCNu64, 
-                &cpu->id, 
-                &cpu->user, 
-                &cpu->nice, 
-                &cpu->system, 
-                &cpu->idle, 
-                &cpu->iowait, 
-                &cpu->irq, 
-                &cpu->softirq, 
-                &cpu->steal, 
-                &cpu->guest, 
-                &cpu->guest_nice);
+                &core->id, 
+                &core->user, 
+                &core->nice, 
+                &core->system, 
+                &core->idle, 
+                &core->iowait, 
+                &core->irq, 
+                &core->softirq, 
+                &core->steal, 
+                &core->guest, 
+                &core->guest_nice);
+
+                cpu->cores = realloc(cpu->cores, sizeof(CPU_core) * (cpu->num_cores + 1));
+                cpu->cores[cpu->num_cores] = core;
+                cpu->num_cores++;
         }      
     }
     free(trash);
