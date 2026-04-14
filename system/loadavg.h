@@ -11,6 +11,6 @@ typedef struct {
     uint32_t total;   
 } LoadAvg;
 
-void read_loadavg(LoadAvg *load);
+void parser_loadavg(LoadAvg *load);
 
 #endif

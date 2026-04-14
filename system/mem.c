@@ -5,16 +5,11 @@
 
 #include "mem.h"
 
-void call_mem(Memory *mem) {
-    read_meminfo(mem);
-    mem_usage(mem);
-}
-
 void mem_usage(Memory *mem) {
     mem->used = (mem->total - mem->available);
 }
 
-void read_meminfo(Memory *mem) {
+void parser_meminfo(Memory *mem) {
 
     FILE *file = fopen("/proc/meminfo", "r");
     if (!file) return;

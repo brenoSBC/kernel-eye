@@ -31,8 +31,8 @@ typedef struct {
 
 void calculate_core_usage(CPU_cores *cpu);
 
-void read_cpuinfo(CPU_info *cpu);
+void parser_cpuinfo(CPU_info *cpu);
 
-void read_cpu_stat(CPU_cores *cpu);
+void parser_cpu_stat(CPU_cores *cpu);
 
 #endif
