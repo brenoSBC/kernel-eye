@@ -6,41 +6,28 @@
 
 #include "cpu.h"
 
-void calculate_core_usage(CPU_cores *cpu) {
+void read_cpuinfo(CPU_info *cpu) {
 
-    read_cpu_stat(cpu);
+    FILE *file = fopen("/proc/cpuinfo", "r");
+    if (!file) return;
 
-    CPU_stat *prev = malloc(sizeof(CPU_stat) * cpu->num_cores);
-    size_t n = cpu->num_cores;
+    char *line = NULL;
+    size_t len = 0;
 
-    memcpy(prev, cpu->cores, sizeof(CPU_stat) * n);
+    while (getline(&line, &len, file) != -1) {
+        if (strncmp(line, "model name", 10) == 0) {
+            char *ptr = strchr(line, ':');
+            ++ptr; // pula ':'
+            while (*ptr == ' ') ++ptr; // pula espaços
 
-    sleep(1);
-
-    read_cpu_stat(cpu);
-
-    for (size_t i = 0; i < cpu->num_cores && i < n; i++) {
-
-        uint64_t idle_1 = prev[i].idle + prev[i].iowait;
-        uint64_t idle_2 = cpu->cores[i].idle + cpu->cores[i].iowait;
-
-        uint64_t total_1 = prev[i].user + prev[i].nice +
-                           prev[i].system + prev[i].idle +
-                           prev[i].iowait + prev[i].irq +
-                           prev[i].softirq + prev[i].steal;
-
-        uint64_t total_2 = cpu->cores[i].user + cpu->cores[i].nice +
-                           cpu->cores[i].system + cpu->cores[i].idle +
-                           cpu->cores[i].iowait + cpu->cores[i].irq +
-                           cpu->cores[i].softirq + cpu->cores[i].steal;
-
-        uint64_t idle_diff = idle_2 - idle_1;
-        uint64_t total_diff = total_2 - total_1;
-
-        if (total_diff == 0) cpu->cores[i].usage = 0.0;
-        else cpu->cores[i].usage = (1.0 - (double)idle_diff / total_diff) * 100.0;
+            strncpy(cpu->model_name, ptr, sizeof(cpu->model_name) - 1);
+            cpu->model_name[strcspn(ptr, "\n")] = '\0';                // pega cpu->model_name na posição que tem um '\n' e coloca um \'0' no lugar
+            
+            break;
+        }
     }
-    free(prev);
+    free(line);
+    fclose(file);
 }
 
 void read_cpu_stat(CPU_cores *cpu) {
@@ -100,26 +87,39 @@ void read_cpu_stat(CPU_cores *cpu) {
     fclose(file);
 }
 
-void read_cpuinfo(CPU_info *cpu) {
+void calculate_core_usage(CPU_cores *cpu) {
 
-    FILE *file = fopen("/proc/cpuinfo", "r");
-    if (!file) return;
+    read_cpu_stat(cpu);
 
-    char *line = NULL;
-    size_t len = 0;
+    CPU_stat *prev = malloc(sizeof(CPU_stat) * cpu->num_cores);
+    size_t n = cpu->num_cores;
 
-    while (getline(&line, &len, file) != -1) {
-        if (strncmp(line, "model name", 10) == 0) {
-            char *ptr = strchr(line, ':');
-            ++ptr; // pula ':'
-            while (*ptr == ' ') ++ptr; // pula espaços
+    memcpy(prev, cpu->cores, sizeof(CPU_stat) * n);
 
-            strncpy(cpu->model_name, ptr, sizeof(cpu->model_name) - 1);
-            cpu->model_name[strcspn(ptr, "\n")] = '\0';                // pega cpu->model_name na posição que tem um '\n' e coloca um \'0' no lugar
-            
-            break;
-        }
+    sleep(1);
+
+    read_cpu_stat(cpu);
+
+    for (size_t i = 0; i < cpu->num_cores && i < n; i++) {
+
+        uint64_t idle_1 = prev[i].idle + prev[i].iowait;
+        uint64_t idle_2 = cpu->cores[i].idle + cpu->cores[i].iowait;
+
+        uint64_t total_1 = prev[i].user + prev[i].nice +
+                           prev[i].system + prev[i].idle +
+                           prev[i].iowait + prev[i].irq +
+                           prev[i].softirq + prev[i].steal;
+
+        uint64_t total_2 = cpu->cores[i].user + cpu->cores[i].nice +
+                           cpu->cores[i].system + cpu->cores[i].idle +
+                           cpu->cores[i].iowait + cpu->cores[i].irq +
+                           cpu->cores[i].softirq + cpu->cores[i].steal;
+
+        uint64_t idle_diff = idle_2 - idle_1;
+        uint64_t total_diff = total_2 - total_1;
+
+        if (total_diff == 0) cpu->cores[i].usage = 0.0;
+        else cpu->cores[i].usage = (1.0 - (double)idle_diff / total_diff) * 100.0;
     }
-    free(line);
-    fclose(file);
+    free(prev);
 }

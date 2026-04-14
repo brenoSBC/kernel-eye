@@ -9,11 +9,6 @@ typedef struct {
 } CPU_info;
 
 typedef struct {
-    CPU_stat *cores;
-    size_t num_cores;
-} CPU_cores;
-
-typedef struct {
     uint32_t id;
     double usage;
 
@@ -28,6 +23,11 @@ typedef struct {
     uint64_t guest;
     uint64_t guest_nice;
 } CPU_stat;
+
+typedef struct {
+    CPU_stat *cores;
+    size_t num_cores;
+} CPU_cores;
 
 void calculate_core_usage(CPU_cores *cpu);
 
