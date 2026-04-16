@@ -6,7 +6,7 @@
 
 #include "loadavg.h"
 
-void parser_loadavg(LoadAvg *load) {
+void read_loadavg(LoadAvg *load) {
 
     FILE *file = fopen("/proc/loadavg", "r");
     if(!file) return;

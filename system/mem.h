@@ -11,6 +11,6 @@ typedef struct {
 
 void mem_usage(Memory *mem);
 
-void parser_meminfo(Memory *mem);
+void read_meminfo(Memory *mem);
 
 #endif  

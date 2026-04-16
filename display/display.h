@@ -12,6 +12,10 @@ typedef struct {
 } System;
 
 
-void system_refresh(WINDOW *window);
+void run(void);
 
-void ncurses_init();
+void ncurses_init(void);
+
+void update_system(System *sys);
+
+void draw_system(WINDOW *window, System *sys);

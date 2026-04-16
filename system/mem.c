@@ -9,7 +9,7 @@ void mem_usage(Memory *mem) {
     mem->used = (mem->total - mem->available);
 }
 
-void parser_meminfo(Memory *mem) {
+void read_meminfo(Memory *mem) {
 
     FILE *file = fopen("/proc/meminfo", "r");
     if (!file) return;

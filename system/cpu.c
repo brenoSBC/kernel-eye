@@ -6,7 +6,7 @@
 
 #include "cpu.h"
 
-void parser_cpuinfo(CPU_info *cpu) {
+void read_cpuinfo(CPU_info *cpu) {
 
     FILE *file = fopen("/proc/cpuinfo", "r");
     if (!file) return;
@@ -30,7 +30,7 @@ void parser_cpuinfo(CPU_info *cpu) {
     fclose(file);
 }
 
-void parser_cpu_stat(CPU_cores *cpu) {
+void read_cpu_stat(CPU_cores *cpu) {
 
     FILE *file = fopen("/proc/stat", "r");
     if (!file) return;
@@ -89,7 +89,7 @@ void parser_cpu_stat(CPU_cores *cpu) {
 
 void calculate_core_usage(CPU_cores *cpu) {
 
-    parser_cpu_stat(cpu);
+    read_cpu_stat(cpu);
 
     CPU_stat *prev = malloc(sizeof(CPU_stat) * cpu->num_cores);
     size_t n = cpu->num_cores;
@@ -98,7 +98,7 @@ void calculate_core_usage(CPU_cores *cpu) {
 
     sleep(1);
 
-    parser_cpu_stat(cpu);
+    read_cpu_stat(cpu);
 
     for (size_t i = 0; i < cpu->num_cores && i < n; i++) {
 
