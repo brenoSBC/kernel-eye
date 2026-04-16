@@ -1,3 +1,5 @@
+#include <ncurses.h>
+
 #include "../system/cpu.h"
 #include "../system/mem.h"
 #include "../system/loadavg.h"
@@ -9,4 +11,7 @@ typedef struct {
     LoadAvg load;
 } System;
 
-void display(void);
+
+void system_refresh(WINDOW *window);
+
+void ncurses_init();

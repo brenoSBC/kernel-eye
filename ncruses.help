@@ -1,0 +1,77 @@
+You can find detailed information on how to use ncurses at:
+
+https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/index.html
+
+But here is also a quick guide to the functions used in this program.
+
+
+
+
+
+
+initscr();        // Initializes ncurses
+                  // Creates the default window (stdscr)
+
+
+
+
+
+noecho();         // Disables echoing of user input to the screen
+
+
+
+
+
+cbreak();         // Disables line buffering (input is available immediately)
+
+
+
+
+
+start_color();    // Enables color functionality
+
+
+
+
+
+getmaxx(window);  // Returns the maximum number of columns of a window
+
+
+
+
+
+newwin(height, width, start_y, start_x); // Creates a new window (height, width, starting Y position, starting X position)
+
+
+
+
+
+init_pair(pair_id, fg_color, bg_color);  // Defines a color pair (ID, foreground color, background color)
+                                         // Colors are available as:
+                                         COLOR_BLACK   0
+                                         COLOR_RED     1
+                                         COLOR_GREEN   2
+                                         COLOR_YELLOW  3
+                                         COLOR_BLUE    4
+                                         COLOR_MAGENTA 5
+                                         COLOR_CYAN    6
+                                         COLOR_WHITE   7
+
+
+
+
+
+wrefresh(window); // Refreshes the window and updates the display
+
+
+
+
+
+werase(window);   // Clears the contents of the window
+
+
+
+
+
+box(window, vert_char, horiz_char); // Draws a border around the window (target window, vertical char, horizontal char)
+                                    // You can change the border style by providing different characters (0 uses the default characters)
