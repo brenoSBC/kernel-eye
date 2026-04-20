@@ -1,4 +1,4 @@
-#include "display/display.h"
+#include "app/app.h"
 
 int main(void) {
     run();
