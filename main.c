@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <inttypes.h>
+#include <unistd.h>
 
 #include "system/mem.h"
 #include "system/cpu.h"
+#include "system/userhost.h"
+#include "system/uptime.h"
 
 char eye_unicode[] =
     "\n"
@@ -45,21 +48,37 @@ int main(void) {
 
     CPU_info cpuinfo = {0};
 
+    Userhost user = {0};
+
+    Uptime uptime = {0};
 
     read_meminfo(&mem);
     mem_usage(&mem);
 
     read_cpuinfo(&cpuinfo);
 
+    get_user_and_host_name(&user);
+
+    read_uptime(&uptime);
+
+    
+
     printf("\033[8;35H");
     printf("CPU: %s", cpuinfo.model_name);
 
     printf("\033[9;35H");
-    printf("Cache: %zukb", cpuinfo.cache_size);
+    printf("Cache: %zumb", cpuinfo.cache_size / 1000);
 
 
     printf("\033[10;35H");
     printf("Memory: %"SCNu64"mb / %"SCNu64"mb", mem.used/1000, mem.total / 1000);
+
+
+    printf("\033[11;35H");
+    printf("%s@%s", user.username, user.hostname);
+
+    printf("\033[12;35H");
+    printf("Uptime: %zu minute(s)", uptime.boot_uptime / 60);
 
 
     printf("\033[25;1H");
