@@ -9,8 +9,8 @@ typedef struct {
     uint64_t used;
 } Memory;
 
-void mem_usage(Memory *mem);
+void mem_usage(Memory* mem);
 
-void read_meminfo(Memory *mem);
+void read_meminfo(Memory* mem);
 
 #endif  

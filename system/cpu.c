@@ -6,26 +6,38 @@
 
 #include "cpu.h"
 
-void read_cpuinfo(CPU_info *cpu) {
+void read_cpuinfo(CPU_info* cpu) {
 
     FILE *file = fopen("/proc/cpuinfo", "r");
     if (!file) return;
 
-    char *line = NULL;
+    char* line = NULL;
     size_t len = 0;
+
+    int found_cache_size = 0;
+    int found_cpu_model = 0;
 
     while (getline(&line, &len, file) != -1) {
         if (strncmp(line, "model name", 10) == 0) {
-            char *ptr = strchr(line, ':');
-            ++ptr; // pula ':'
-            while (*ptr == ' ') ++ptr; // pula espaços
+            char* ptr = strchr(line, ':');
+            ++ptr; // jumps ':'
+            while (*ptr == ' ') ++ptr; // jump spaces
 
             strncpy(cpu->model_name, ptr, sizeof(cpu->model_name) - 1);
-            cpu->model_name[strcspn(ptr, "\n")] = '\0';                // pega cpu->model_name na posição que tem um '\n' e coloca um \'0' no lugar
+            cpu->model_name[strcspn(ptr, "\n")] = '\0';
+
+            found_cpu_model = 1;
             
-            break;
+        } else if (strncmp(line, "cache size", 10) == 0) {
+            char* ptr = strchr(line, ':');
+            ++ptr;
+            sscanf(ptr, " %zu KB", &cpu->cache_size);
+
+            found_cache_size = 1;
         }
+        if(found_cpu_model && found_cache_size) break;
     }
+
     free(line);
     fclose(file);
 }

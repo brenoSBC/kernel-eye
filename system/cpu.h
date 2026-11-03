@@ -6,6 +6,7 @@
 
 typedef struct {
     char model_name[128];
+    size_t cache_size;
 } CPU_info;
 
 typedef struct {

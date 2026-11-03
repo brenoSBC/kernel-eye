@@ -5,16 +5,16 @@
 
 #include "mem.h"
 
-void mem_usage(Memory *mem) {
+void mem_usage(Memory* mem) {
     mem->used = (mem->total - mem->available);
 }
 
-void read_meminfo(Memory *mem) {
-
-    FILE *file = fopen("/proc/meminfo", "r");
+void read_meminfo(Memory* mem) {
+ 
+    FILE* file = fopen("/proc/meminfo", "r");
     if (!file) return;
 
-    char *line = NULL;
+    char* line = NULL;
     size_t len = 0;
 
     mem->total = 0;            
