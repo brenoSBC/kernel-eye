@@ -77,18 +77,21 @@ int main(void) {
     printf("OS: %s %s", os.osname, kernel.arch);
 
     printf("\033[10;35H");
-    printf("Kernel: %s", kernel.osrelease);
+    printf("Family: %s", os.osfamily);
 
     printf("\033[11;35H");
+    printf("Kernel: %s", kernel.osrelease);
+
+    printf("\033[12;35H");
     printf("Uptime: %zu minute(s)", uptime.boot_uptime / 60);
     
-    printf("\033[12;35H");
+    printf("\033[13;35H");
     printf("CPU: %s", cpuinfo.model_name);
 
-    printf("\033[13;35H");
+    printf("\033[14;35H");
     printf("Cache: %zumb", cpuinfo.cache_size / 1000);
 
-    printf("\033[14;35H");
+    printf("\033[15;35H");
     printf("Memory: %"SCNu64"mb / %"SCNu64"mb", mem.used/1000, mem.total / 1000);
     
     printf("\033[25;1H");
